@@ -1,4 +1,4 @@
-local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/BeanyDio/Supernal-Hub/refs/heads/main/source.lua?token=GHSAT0AAAAAADAINW7T5RMKGFWINLXAZLWEZ7EF2RQ'))()
+local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/BeanyDio/Supernal-Hub/refs/heads/main/source.lua'))()
 
 local Window = Rayfield:CreateWindow({
    Name = " Supernal Script Hub | Universal ",
