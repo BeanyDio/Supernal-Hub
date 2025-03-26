@@ -1,4 +1,4 @@
-local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/BeanyDio/script_hub/refs/heads/main/source.lua'))()
+local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/BeanyDio/Supernal-Hub/refs/heads/main/source.lua?token=GHSAT0AAAAAADAINW7T5RMKGFWINLXAZLWEZ7EF2RQ'))()
 
 local Window = Rayfield:CreateWindow({
    Name = " Supernal Script Hub | Universal ",
@@ -6,27 +6,12 @@ local Window = Rayfield:CreateWindow({
    LoadingSubtitle = "by Supernal",
    ConfigurationSaving = {
       Enabled = false,
-      FolderName = nil, -- Create a custom folder for your hub/game
+      FolderName = nil,
       FileName = "Supernal Hub"
    },
-   Discord = {
-      Enabled = false,
-      Invite = "noinvitelink", -- The Discord invite code, do not include discord.gg/. E.g. discord.gg/ABCD would be ABCD
-      RememberJoins = true -- Set this to false to make them join the discord every time they load it up
-   },
-   KeySystem = false, -- Set this to true to use our key system
-   KeySettings = {
-      Title = "Key | Youtube Hub",
-      Subtitle = "Key System",
-      Note = "Key In Discord Server",
-      FileName = "YoutubeHubKey1", -- It is recommended to use something unique as other scripts using Rayfield may overwrite your key file
-      SaveKey = false, -- The user's key will be saved, but if you change the key, they will be unable to use your script
-      GrabKeyFromSite = true, -- If this is true, set Key below to the RAW site you would like Rayfield to get the key from
-      Key = {"https://pastebin.com/raw/AtgzSPWK"} -- List of keys that will be accepted by the system, can be RAW file links (pastebin, github etc) or simple strings ("hello","key22")
-   }
 })
 
-local MainTab = Window:CreateTab("🏠 Home", nil) -- Title, Image
+local MainTab = Window:CreateTab("🏠 Home", nil) 
 local MainSection = MainTab:CreateSection("Main")
 
 Rayfield:Notify({
@@ -34,7 +19,7 @@ Rayfield:Notify({
    Content = "Very cool gui",
    Duration = 5,
    Image = 0,
-   Actions = { -- Notification Buttons
+   Actions = { 
       Ignore = {
          Name = "Okay!",
          Callback = function()
@@ -49,7 +34,6 @@ local RunService = game:GetService("RunService")
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 
--- Настройки полета
 local FLY_ENABLED = false
 local FLY_SPEED = 50
 local FLY_KEYBOARD_CONTROLS = {
@@ -61,28 +45,23 @@ local FLY_KEYBOARD_CONTROLS = {
     Down = Enum.KeyCode.LeftShift
 }
 
--- Переменные для хранения объектов
 local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
 local humanoid = character:WaitForChild("Humanoid")
 local rootPart = character:WaitForChild("HumanoidRootPart")
 local bodyVelocity
 local bodyGyro
 
--- Функция включения полета
 local function EnableFly()
     if FLY_ENABLED then return end
     
-    -- Запоминаем текущее состояние
     humanoid.PlatformStand = true
     
-    -- Создаем BodyVelocity для движения
     bodyVelocity = Instance.new("BodyVelocity")
     bodyVelocity.Velocity = Vector3.new(0, 0, 0)
     bodyVelocity.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
     bodyVelocity.P = 1000
     bodyVelocity.Parent = rootPart
     
-    -- Создаем BodyGyro для стабилизации
     bodyGyro = Instance.new("BodyGyro")
     bodyGyro.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
     bodyGyro.P = 1000
@@ -93,14 +72,11 @@ local function EnableFly()
     FLY_ENABLED = true
 end
 
--- Функция выключения полета
 local function DisableFly()
     if not FLY_ENABLED then return end
     
-    -- Восстанавливаем стандартное управление
     humanoid.PlatformStand = false
     
-    -- Удаляем созданные объекты
     if bodyVelocity then
         bodyVelocity:Destroy()
         bodyVelocity = nil
@@ -114,20 +90,16 @@ local function DisableFly()
     FLY_ENABLED = false
 end
 
--- Функция обработки управления
 local function HandleFlightInput()
     if not FLY_ENABLED or not bodyVelocity or not bodyGyro then return end
     
-    -- Получаем векторы направления камеры
     local camera = workspace.CurrentCamera
     local lookVector = camera.CFrame.LookVector
     local rightVector = camera.CFrame.RightVector
     local upVector = Vector3.new(0, 1, 0)
     
-    -- Направление движения
     local direction = Vector3.new(0, 0, 0)
     
-    -- Обработка клавиш
     if UserInputService:IsKeyDown(FLY_KEYBOARD_CONTROLS.Forward) then
         direction = direction + lookVector
     end
@@ -147,30 +119,25 @@ local function HandleFlightInput()
         direction = direction - upVector
     end
     
-    -- Нормализация и применение скорости
     if direction.Magnitude > 0 then
         direction = direction.Unit * FLY_SPEED
     end
     
-    -- Обновляем скорость и вращение
     bodyVelocity.Velocity = direction
     bodyGyro.CFrame = CFrame.new(rootPart.Position, rootPart.Position + lookVector)
 end
 
--- Обработка изменения персонажа
 LocalPlayer.CharacterAdded:Connect(function(newCharacter)
     character = newCharacter
     humanoid = newCharacter:WaitForChild("Humanoid")
     rootPart = newCharacter:WaitForChild("HumanoidRootPart")
     
-    -- Если полет был включен, пересоздаем объекты
     if FLY_ENABLED then
         DisableFly()
         EnableFly()
     end
 end)
 
--- Подключение к Toggle кнопке
 local ToggleFly = MainTab:CreateToggle({
     Name = "Enable Fly",
     Callback = function(value)
@@ -182,7 +149,6 @@ local ToggleFly = MainTab:CreateToggle({
     end
 })
 
--- Постоянное обновление управления
 RunService.Heartbeat:Connect(function()
     HandleFlightInput()
 end)
@@ -193,26 +159,22 @@ local Slider = MainTab:CreateSlider({
     Increment = 1,
     Suffix = "Speed",
     CurrentValue = 16,
-    Flag = "FlySpeedSlider", -- Уникальный идентификатор
+    Flag = "FlySpeedSlider", 
     Callback = function(Value)
-        FLY_SPEED = Value -- Обновляем глобальную переменную скорости полета
+        FLY_SPEED = Value 
     end,
  })
 
 local Button = MainTab:CreateButton({
    Name = "Infinite Jump Toggle",
    Callback = function()
-       --Toggles the infinite jump between on or off on every script run
 _G.infinjump = not _G.infinjump
 
 if _G.infinJumpStarted == nil then
-  --Ensures this only runs once to save resources
   _G.infinJumpStarted = true
   
-  --Notifies readiness
   game.StarterGui:SetCore("SendNotification", {Title="Supernal Hub"; Text="Infinite Jump Activated!"; Duration=5;})
 
-  --The actual infinite jump
   local plr = game:GetService('Players').LocalPlayer
   local m = plr:GetMouse()
   m.KeyDown:connect(function(k)
@@ -235,7 +197,7 @@ local Slider = MainTab:CreateSlider({
    Increment = 1,
    Suffix = "Speed",
    CurrentValue = 16,
-   Flag = "sliderws", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Flag = "sliderws",
    Callback = function(Value)
         game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = (Value)
    end,
@@ -247,7 +209,7 @@ local Slider = MainTab:CreateSlider({
    Increment = 1,
    Suffix = "Power",
    CurrentValue = 16,
-   Flag = "sliderjp", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Flag = "sliderjp", 
    Callback = function(Value)
         game.Players.LocalPlayer.Character.Humanoid.JumpPower = (Value)
    end,
@@ -273,7 +235,7 @@ end,
 
 local NOSection = MainTab:CreateSection(" ")
 
-local TPTab = Window:CreateTab("⚔️ ESP", nil) -- Title, Image
+local TPTab = Window:CreateTab("⚔️ ESP", nil) 
 
 local ESPSection = TPTab:CreateSection("ESP")
 
@@ -282,23 +244,18 @@ local RunService = game:GetService("RunService")
 local LocalPlayer = Players.LocalPlayer
 local Camera = workspace.CurrentCamera
 
--- Настройки ESP
-local ESP_COLOR = Color3.fromRGB(255, 0, 0) -- Красный цвет по умолчанию
-local ESP_THICKNESS = 1 -- Толщина линий
-local ESP_TRANSPARENCY = 0.7 -- Прозрачность
-local ESP_ENABLED = false -- Выключен по умолчанию
+local ESP_COLOR = Color3.fromRGB(255, 0, 0) 
+local ESP_THICKNESS = 1 
+local ESP_TRANSPARENCY = 0.7 
+local ESP_ENABLED = false 
 
--- Хранилище для ESP элементов
 local ESPItems = {}
 
--- Функция обновления цвета всех ESP элементов
 local function UpdateESPColors()
     for character, espItems in pairs(ESPItems) do
         if character and character.Parent then
-            -- Обновляем цвет рамки
             espItems[1].Color3 = ESP_COLOR
             
-            -- Обновляем цвет текста
             if espItems[2] then
                 espItems[2].TextLabel.TextColor3 = ESP_COLOR
             end
@@ -306,11 +263,8 @@ local function UpdateESPColors()
     end
 end
 
--- Функция создания ESP рамки
 local function CreateESP(character)
     if not character or not character:FindFirstChild("HumanoidRootPart") then return end
-    
-    -- Удаляем старый ESP если есть
     if ESPItems[character] then
         for _, item in pairs(ESPItems[character]) do
             if item then item:Destroy() end
@@ -327,7 +281,6 @@ local function CreateESP(character)
     Box.Transparency = ESP_TRANSPARENCY
     Box.Parent = character
     
-    -- Добавляем текст с именем игрока
     local Billboard = Instance.new("BillboardGui")
     Billboard.Name = "ESP_Name_" .. character.Name
     Billboard.Adornee = character:WaitForChild("Head") or character:WaitForChild("HumanoidRootPart")
@@ -349,7 +302,6 @@ local function CreateESP(character)
     ESPItems[character] = {Box, Billboard}
 end
 
--- Функция удаления ESP
 local function RemoveESP(character)
     if ESPItems[character] then
         for _, item in pairs(ESPItems[character]) do
@@ -359,7 +311,6 @@ local function RemoveESP(character)
     end
 end
 
--- Функция обновления ESP для всех игроков
 local function UpdateESP()
     for _, player in pairs(Players:GetPlayers()) do
         if player ~= LocalPlayer and player.Character then
@@ -372,7 +323,6 @@ local function UpdateESP()
     end
 end
 
--- Обработчик добавления игрока
 local function PlayerAdded(player)
     player.CharacterAdded:Connect(function(character)
         if ESP_ENABLED and player ~= LocalPlayer then
@@ -385,7 +335,6 @@ local function PlayerAdded(player)
     end)
 end
 
--- Инициализация для существующих игроков
 for _, player in pairs(Players:GetPlayers()) do
     if player ~= LocalPlayer then
         PlayerAdded(player)
@@ -395,17 +344,14 @@ for _, player in pairs(Players:GetPlayers()) do
     end
 end
 
--- Обработка новых игроков
 Players.PlayerAdded:Connect(PlayerAdded)
 
--- Обработка выхода игроков
 Players.PlayerRemoving:Connect(function(player)
     if player.Character then
         RemoveESP(player.Character)
     end
 end)
 
--- Подключение к вашему ToggleButton
 local ToggleEsp = TPTab:CreateToggle({
     Name = "Enable ESP",
     Callback = function(value)
@@ -420,11 +366,10 @@ local ToggleEsp = TPTab:CreateToggle({
     end
 })
 
--- Кнопка для установки красного цвета (по умолчанию)
 local Button2 = TPTab:CreateButton({
     Name = "Default ESP Color",
     Callback = function()
-        ESP_COLOR = Color3.fromRGB(255, 0, 0) -- Красный
+        ESP_COLOR = Color3.fromRGB(255, 0, 0) 
         UpdateESPColors()
     end,
 })
@@ -433,7 +378,7 @@ local Button2 = TPTab:CreateButton({
 local Button3 = TPTab:CreateButton({
     Name = "Green ESP Color",
     Callback = function()
-        ESP_COLOR = Color3.fromRGB(0, 255, 0) -- Зеленый
+        ESP_COLOR = Color3.fromRGB(0, 255, 0) 
         UpdateESPColors()
     end,
 })
@@ -443,10 +388,7 @@ RunService.Heartbeat:Connect(function()
     if ESP_ENABLED then
         for character, espItems in pairs(ESPItems) do
             if character and character:FindFirstChild("HumanoidRootPart") then
-                -- Обновляем размер рамки
                 espItems[1].Size = character:GetExtentsSize() * 1.1
-                
-                -- Обновляем позицию BillboardGui
                 if character:FindFirstChild("Head") then
                     espItems[2].Adornee = character.Head
                 else
@@ -457,7 +399,7 @@ RunService.Heartbeat:Connect(function()
     end
 end)
 
-local MiscTab = Window:CreateTab("🎲 Misc", nil) -- Title, Image
+local MiscTab = Window:CreateTab("🎲 Misc", nil) 
 
 local ScriptSection = MiscTab:CreateSection("Popular Scripts")
 
