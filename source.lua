@@ -81,9 +81,75 @@ local settingsTable = {
 		-- rayfieldprompts
 
 	},
+    
 	System = {
 		usageAnalytics = {Type = 'toggle', Value = true, Name = 'Anonymised Analytics'},
 	}
+}
+
+local RestartSection = MiscTab:CreateSection("Restart")
+
+local TeleportService = game:GetService("TeleportService")
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+local function RejoinSameServer()
+    -- Получаем ID текущего сервера
+    local placeId = game.PlaceId
+    local jobId = game.JobId
+    
+    -- Проверяем, что мы не в студии
+    if not game:GetService("RunService"):IsStudio() then
+        -- Пытаемся телепортироваться на тот же сервер
+        local success, errorMsg = pcall(function()
+            TeleportService:TeleportToPlaceInstance(placeId, jobId, LocalPlayer)
+        end)
+        
+        -- Если не получилось, просто перезаходим в игру
+        if not success then
+            TeleportService:Teleport(placeId, LocalPlayer)
+        end
+    else
+        Rayfield:Notify({
+            Title = "Ошибка",
+            Content = "Функция недоступна в Roblox Studio",
+            Duration = 5,
+            Image = 0,
+            Actions = {
+                Ignore = {
+                    Name = "OK",
+                    Callback = function() end
+                },
+            },
+        })
+    end
+end
+
+-- Создаем кнопку для перезахода
+local RejoinButton = MiscTab:CreateButton({
+    Name = "Перезайти в этот сервер",
+    Callback = function()
+        Rayfield:Notify({
+            Title = "Перезагрузка",
+            Content = "Пытаемся переподключиться к серверу...",
+            Duration = 3,
+            Image = 0,
+            Actions = {
+                Ignore = {
+                    Name = "OK",
+                    Callback = function() end
+                },
+            },
+        })
+        
+        -- Задержка перед релоадом
+        task.delay(1, RejoinSameServer)
+    end,
+})
+
+-- Добавляем в настройки
+settingsTable.Restart = {
+    rejoinSameServer = {Type = 'button', Value = RejoinSameServer, Name = 'Rejoin Same Server'}
 }
 
 local HttpService = getService('HttpService')
