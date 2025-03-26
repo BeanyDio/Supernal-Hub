@@ -81,9 +81,6 @@ local settingsTable = {
 		-- rayfieldprompts
 
 	},
-    Restart = {
-		usageRejoin = {Type = 'toggle', Value = true, Name = 'Rejoin'},
-	},
 	System = {
 		usageAnalytics = {Type = 'toggle', Value = true, Name = 'Anonymised Analytics'},
 	}
