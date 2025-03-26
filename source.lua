@@ -10,7 +10,7 @@
 ]]
 
 if debugX then
-	warn('Initialising Rayfield')
+	warn('Initialising Supernal')
 end
 
 local function getService(name)
@@ -47,7 +47,6 @@ local function loadWithTimeout(url: string, timeout: number?): ...any
 
 	local timeoutThread = task.delay(timeout, function()
 		if not requestCompleted then
-			warn(`Request for {url} timed out after {timeout} seconds`)
 			task.cancel(requestThread)
 			result = "Request timed out"
 			requestCompleted = true
@@ -63,7 +62,7 @@ local function loadWithTimeout(url: string, timeout: number?): ...any
 		task.cancel(timeoutThread)
 	end
 	if not success then
-		warn(`Failed to process {url}: {result}`)
+		
 	end
 	return if success then result else nil
 end
@@ -153,19 +152,19 @@ local function loadSettings()
 	
 	if not success then 
 		if writefile then
-			warn('Rayfield had an issue accessing configuration saving capability.')
+			
 		end
 	end
 end
 
 if debugX then
-	warn('Now Loading Settings Configuration')
+	
 end
 
 loadSettings()
 
 if debugX then
-	warn('Settings Loaded')
+	
 end
 
 --if not cachedSettings or not cachedSettings.System or not cachedSettings.System.usageAnalytics then
@@ -194,13 +193,13 @@ end
 
 if not requestsDisabled then
 	if debugX then
-		warn('Querying Settings for Reporter Information')
+		
 	end
 	local function sendReport()
 		if useStudio then
 			print('Sending Analytics')
 		else
-			if debugX then warn('Reporting Analytics') end
+			if debugX then end
 			task.spawn(function()
 				local success, reporter = pcall(function()
 					return loadstring(game:HttpGet("https://analytics.sirius.menu/v1/reporter", true))()
@@ -210,10 +209,10 @@ if not requestsDisabled then
 						reporter.report("Rayfield", Release, InterfaceBuild)
 					end)
 				else
-					warn("Failed to load or execute the reporter. \nPlease notify Rayfield developers at sirius.menu/discord.")
+					
 				end
 			end)
-			if debugX then warn('Finished Report') end
+			if debugX then end
 		end
 	end
 	if cachedSettings and (#cachedSettings == 0 or (cachedSettings.System and cachedSettings.System.usageAnalytics and cachedSettings.System.usageAnalytics.Value)) then
@@ -224,7 +223,7 @@ if not requestsDisabled then
 end
 
 if debugX then
-	warn('Moving on to continue initialisation')
+	
 end
 
 local RayfieldLibrary = {
@@ -627,8 +626,7 @@ repeat
 	correctBuild = false
 
 	if not warned then
-		warn('Supernal | Build Mismatch')
-		print('Supernal may encounter issues as you are running an incompatible interface version ('.. ((Rayfield:FindFirstChild('Build') and Rayfield.Build.Value) or 'No Build') ..').\n\nThis version of Rayfield is intended for interface build '..InterfaceBuild..'.')
+		
 		warned = true
 	end
 
@@ -760,21 +758,21 @@ end
 
 local function getIcon(name : string): {id: number, imageRectSize: Vector2, imageRectOffset: Vector2}
 	if not Icons then
-		warn("Lucide Icons: Cannot use icons as icons library is not loaded")
+		
 		return
 	end
 	name = string.match(string.lower(name), "^%s*(.*)%s*$") :: string
 	local sizedicons = Icons['48px']
 	local r = sizedicons[name]
 	if not r then
-		error(`Lucide Icons: Failed to find icon by the name of "{name}"`, 2)
+		
 	end
 
 	local rirs = r[2]
 	local riro = r[3]
 
 	if type(r[1]) ~= "number" or type(rirs) ~= "table" or type(riro) ~= "table" then
-		error("Lucide Icons: Internal error: Invalid auto-generated asset entry")
+		
 	end
 
 	local irs = Vector2.new(rirs[1], rirs[2])
@@ -794,9 +792,9 @@ local function getAssetUri(id: any): string
 	if type(id) == "number" then
 		assetUri = "rbxassetid://" .. id
 	elseif type(id) == "string" and not Icons then
-		warn("Supernal | Cannot use Lucide icons as icons library is not loaded")
+		
 	else
-		warn("Supernal | The icon argument must either be an icon ID (number) or a Lucide icon name (string)")
+		
 	end
 	return assetUri
 end
@@ -892,7 +890,7 @@ local function LoadConfiguration(Configuration)
 	local success, Data = pcall(function() return HttpService:JSONDecode(Configuration) end)
 	local changed
 
-	if not success then warn('Supernal had an issue decoding the configuration file, please try delete the file and reopen Supernal.') return end
+	if not success then return end
 
 	-- Iterate through current UI elements' flags
 	for FlagName, Flag in pairs(RayfieldLibrary.Flags) do
@@ -911,9 +909,7 @@ local function LoadConfiguration(Configuration)
 				end
 			end)
 		else
-			warn("Supernal | Unable to find '"..FlagName.. "' in the save file.")
-			print("The error above may not be an issue if new elements have been added or not been set values.")
-			--RayfieldLibrary:Notify({Title = "Rayfield Flags", Content = "Rayfield was unable to find '"..FlagName.. "' in the save file. Check sirius.menu/discord for help.", Image = 3944688398})
+			
 		end
 	end
 
@@ -961,7 +957,7 @@ local function SaveConfiguration()
 	end
 
 	if debugX then
-		warn(HttpService:JSONEncode(Data))
+	
 	end
 
 	if writefile then
@@ -1019,8 +1015,7 @@ function RayfieldLibrary:Notify(data) -- action e.g open messages
 		newNotification.Visible = true
 
 		if data.Actions then
-			warn('Rayfield | Not seeing your actions in notifications?')
-			print("Notification Actions are being sunset for now, keep up to date on when they're back in the telegram. (t.me/SupernalRB)")
+			
 		end
 
 		-- Calculate textbounds and set initial values
@@ -1450,7 +1445,7 @@ local function createSettings(window)
 	if not (writefile and isfile and readfile and isfolder and makefolder) and not useStudio then
 		if Topbar['Settings'] then Topbar.Settings.Visible = false end
 		Topbar['Search'].Position = UDim2.new(1, -75, 0.5, 0)
-		warn('Can\'t create settings as no file-saving functionality is available.')
+		
 		return
 	end
 
@@ -1588,11 +1583,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 		if not success then
 			local success, result2 = pcall(ChangeTheme, 'Default')
 			if not success then
-				warn('CRITICAL ERROR - NO DEFAULT THEME')
-				print(result2)
 			end
-			warn('issue rendering theme. no theme on file')
-			print(result)
 		end
 	end
 
@@ -1696,8 +1687,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 					Settings.KeySettings.Key[i] = string.gsub(Settings.KeySettings.Key[i], " ", "")
 				end)
 				if not Success then
-					print("Supernal | "..Key.." Error " ..tostring(Response))
-					warn('Check docs.sirius.menu for help with Rayfield specific development.')
+					
 				end
 			end
 		end
@@ -2047,8 +2037,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 					TweenService:Create(Button.ElementIndicator, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {TextTransparency = 1}):Play()
 					TweenService:Create(Button.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
 					Button.Title.Text = "Callback Error"
-					print("Supernal | "..ButtonSettings.Name.." Callback Error " ..tostring(Response))
-					warn('Check docs.sirius.menu for help with Rayfield specific development.')
+					
 					task.wait(0.5)
 					Button.Title.Text = ButtonSettings.Name
 					TweenService:Create(Button, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
@@ -2551,8 +2540,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 					TweenService:Create(Input, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = Color3.fromRGB(85, 0, 0)}):Play()
 					TweenService:Create(Input.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
 					Input.Title.Text = "Callback Error"
-					print("Supernal | "..InputSettings.Name.." Callback Error " ..tostring(Response))
-					warn('Check docs.sirius.menu for help with Rayfield specific development.')
+					
 					task.wait(0.5)
 					Input.Title.Text = InputSettings.Name
 					TweenService:Create(Input, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
@@ -2791,8 +2779,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 							TweenService:Create(Dropdown, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = Color3.fromRGB(85, 0, 0)}):Play()
 							TweenService:Create(Dropdown.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
 							Dropdown.Title.Text = "Callback Error"
-							print("Supernal | "..DropdownSettings.Name.." Callback Error " ..tostring(Response))
-							warn('Check docs.sirius.menu for help with Rayfield specific development.')
+							
 							task.wait(0.5)
 							Dropdown.Title.Text = DropdownSettings.Name
 							TweenService:Create(Dropdown, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
@@ -2881,8 +2868,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 					TweenService:Create(Dropdown, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = Color3.fromRGB(85, 0, 0)}):Play()
 					TweenService:Create(Dropdown.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
 					Dropdown.Title.Text = "Callback Error"
-					print("Supernal | "..DropdownSettings.Name.." Callback Error " ..tostring(Response))
-					warn('Check docs.sirius.menu for help with Rayfield specific development.')
+					
 					task.wait(0.5)
 					Dropdown.Title.Text = DropdownSettings.Name
 					TweenService:Create(Dropdown, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
@@ -3002,8 +2988,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 							TweenService:Create(Keybind, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = Color3.fromRGB(85, 0, 0)}):Play()
 							TweenService:Create(Keybind.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
 							Keybind.Title.Text = "Callback Error"
-							print("Supernal | "..KeybindSettings.Name.." Callback Error " ..tostring(Response))
-							warn('Check docs.sirius.menu for help with Rayfield specific development.')
+							
 							task.wait(0.5)
 							Keybind.Title.Text = KeybindSettings.Name
 							TweenService:Create(Keybind, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
@@ -3123,7 +3108,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 				end
 
 				local Success, Response = pcall(function()
-					if debugX then warn('Running toggle \''..ToggleSettings.Name..'\' (Interact)') end
+					if debugX then end
 
 					ToggleSettings.Callback(ToggleSettings.CurrentValue)
 				end)
@@ -3132,8 +3117,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 					TweenService:Create(Toggle, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = Color3.fromRGB(85, 0, 0)}):Play()
 					TweenService:Create(Toggle.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
 					Toggle.Title.Text = "Callback Error"
-					print("Supernal | "..ToggleSettings.Name.." Callback Error " ..tostring(Response))
-					warn('Check docs.sirius.menu for help with Rayfield specific development.')
+					
 					task.wait(0.5)
 					Toggle.Title.Text = ToggleSettings.Name
 					TweenService:Create(Toggle, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
@@ -3173,7 +3157,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 				end
 
 				local Success, Response = pcall(function()
-					if debugX then warn('Running toggle \''..ToggleSettings.Name..'\' (:Set)') end
+					if debugX then end
 
 					ToggleSettings.Callback(ToggleSettings.CurrentValue)
 				end)
@@ -3182,8 +3166,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 					TweenService:Create(Toggle, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = Color3.fromRGB(85, 0, 0)}):Play()
 					TweenService:Create(Toggle.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
 					Toggle.Title.Text = "Callback Error"
-					print("Supernal | "..ToggleSettings.Name.." Callback Error " ..tostring(Response))
-					warn('Check docs.sirius.menu for help with Rayfield specific development.')
+					
 					task.wait(0.5)
 					Toggle.Title.Text = ToggleSettings.Name
 					TweenService:Create(Toggle, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
@@ -3331,8 +3314,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 								TweenService:Create(Slider, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = Color3.fromRGB(85, 0, 0)}):Play()
 								TweenService:Create(Slider.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
 								Slider.Title.Text = "Callback Error"
-								print("Supernal | "..SliderSettings.Name.." Callback Error " ..tostring(Response))
-								warn('Check docs.sirius.menu for help with Rayfield specific development.')
+								
 								task.wait(0.5)
 								Slider.Title.Text = SliderSettings.Name
 								TweenService:Create(Slider, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
@@ -3365,8 +3347,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 					TweenService:Create(Slider, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = Color3.fromRGB(85, 0, 0)}):Play()
 					TweenService:Create(Slider.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {Transparency = 1}):Play()
 					Slider.Title.Text = "Callback Error"
-					print("Supernal | "..SliderSettings.Name.." Callback Error " ..tostring(Response))
-					warn('Check docs.sirius.menu for help with Rayfield specific development.')
+					
 					task.wait(0.5)
 					Slider.Title.Text = SliderSettings.Name
 					TweenService:Create(Slider, TweenInfo.new(0.6, Enum.EasingStyle.Exponential), {BackgroundColor3 = SelectedTheme.ElementBackground}):Play()
@@ -3478,7 +3459,7 @@ function RayfieldLibrary:CreateWindow(Settings)
 		createSettings(Window)
 	end)
 	
-	if not success then warn('Rayfield had an issue creating settings.') end
+	if not success then end
 	
 	return Window
 end
@@ -3669,7 +3650,7 @@ function RayfieldLibrary:LoadConfiguration()
 		if success and loaded and not notified then
 			RayfieldLibrary:Notify({Title = "Rayfield Configurations", Content = "The configuration file for this script has been loaded from a previous session.", Image = 4384403532})
 		elseif not success and not notified then
-			warn('Rayfield Configurations Error | '..tostring(result))
+			
 			RayfieldLibrary:Notify({Title = "Rayfield Configurations", Content = "We've encountered an issue loading your configuration correctly.\n\nCheck the Developer Console for more information.", Image = 4384402990})
 		end
 	end
